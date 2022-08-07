@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+</head>
+<body>
+<div id="app">
+    路径：<input id="path" type="text" style="width: 80%">
+    <button v-on:click="search">获取文件列表</button>
+    <div>
+        匹配：<input id="regex" type="text" @input="preview"  style="width: 80%">
+    </div>
+    <div>
+        替换：<input id="replacement" type="text" @input="preview" style="width: 80%">
+    </div>
+
+    <select multiple="multiple" id="fileList" style="width: 40%; height: 1000px" @change="preview" >
+        <option v-for="item in fileList" v-bind:value="item">{{item}}</option>
+    </select>
+    -->
+    <select multiple="multiple" style="width: 40%; height: 1000px">
+        <option v-for="item in previewList" v-bind:value="item">{{item}}</option>
+    </select>
+
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            fileList: [],
+            previewList: [],
+        },
+        methods: {
+            search: function () {
+                $.ajax({
+                    url: 'http://localhost:80/search',
+                    type: 'get',
+                    data: {
+                        path: $('#path').val()
+                    },
+                    success: function (data) {
+                        app.fileList = data.data;
+                    }
+                })
+            },
+            preview: function () {
+                console.log($('#fileList').val())
+
+                $.ajax({
+                    url: 'http://localhost:80/preview',
+                    type: 'post',
+                    data: {
+                        fileList: $('#fileList').val(),
+                        regex: $('#regex').val(),
+                        replacement: $('#replacement').val()
+                    },
+                    success: function (data) {
+                        app.previewList = data.data;
+                    }
+                })
+            }
+        }
+    });
+</script>
+</body>
+</html>
