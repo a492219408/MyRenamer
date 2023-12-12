@@ -15,6 +15,7 @@
     </div>
     <div>
         替换：<input id="replacement" type="text" @input="preview" style="width: 80%">
+        <button v-on:click="apply">应用</button>
     </div>
 
     <select multiple="multiple" id="fileList" style="width: 40%; height: 1000px" @change="preview" >
@@ -60,6 +61,21 @@
                     },
                     success: function (data) {
                         app.previewList = data.data;
+                    }
+                })
+            },
+            apply: function () {
+                $.ajax({
+                    url: 'http://localhost:80/apply',
+                    type: 'post',
+                    data: {
+                        fileList: $('#fileList').val(),
+                        path: $('#path').val(),
+                        regex: $('#regex').val(),
+                        replacement: $('#replacement').val()
+                    },
+                    success: function () {
+                        alert("应用成功");
                     }
                 })
             }

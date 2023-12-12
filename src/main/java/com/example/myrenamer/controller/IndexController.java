@@ -33,4 +33,25 @@ public class IndexController {
         result.put("data", replaceResult);
         return result;
     }
+
+    @PostMapping("apply")
+    @ResponseBody
+    public Map<String, Object> apply(@RequestParam("fileList[]") String[] fileList, String path, String regex, String replacement) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("code", 0);
+        result.put("data", "success");
+        try {
+            for (int i = 0; i < fileList.length; i++) {
+                File file = new File(path +"/"+ fileList[i]);
+                String newFileName = fileList[i].replaceAll(regex, replacement);
+                File newFile = new File(path +"/"+ newFileName);
+                System.out.println(file.renameTo(newFile));
+            }
+        } catch (Exception e) {
+            result.put("code", 1);
+            result.put("data", "error");
+        }
+        return result;
+    }
+
 }
